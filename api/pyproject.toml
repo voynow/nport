@@ -1,0 +1,17 @@
+[project]
+name = "nport"
+version = "0.1.0"
+description = "Default template for PDM package"
+authors = [{ name = "voynow", email = "voynow99@gmail.com" }]
+dependencies = ["requests>=2.32.3", "pydantic>=2.10.6", "fastapi>=0.115.11", "uvicorn>=0.34.0"]
+requires-python = ">=3.11"
+readme = "README.md"
+license = { text = "MIT" }
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+
+[tool.pdm]
+distribution = true
