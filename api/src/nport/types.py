@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field
 class Holding(BaseModel):
     name: str
     cusip: str
-    balance: int
+    balance: float
     value: float = Field(alias="valUSD")
 
 
