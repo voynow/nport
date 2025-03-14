@@ -33,7 +33,6 @@ export default function Home() {
       if (!res.ok) throw new Error('Failed to fetch holdings')
       const rawData = await res.json()
 
-      // Initial sort by valUSD desc
       const sortedData = {
         ...rawData,
         holdings: [...rawData.holdings].sort((a, b) => b.valUSD - a.valUSD)
@@ -90,13 +89,11 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
         <header className="mb-12 text-center">
-          <h1 className="text-3xl font-bold text-slate-800 mb-2">N-PORT Explorer</h1>
+          <h1 className="text-3xl font-bold text-slate-800 mb-2">N-Port Explorer</h1>
           <p className="text-slate-600">Enter a CIK to view fund holdings</p>
         </header>
 
-        {/* Search Section */}
         <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
           <div className="flex gap-3">
             <input
@@ -130,7 +127,6 @@ export default function Home() {
           )}
         </div>
 
-        {/* Results Section */}
         {data && (
           <div className="bg-white rounded-xl shadow-sm overflow-hidden">
             <div className="p-6 border-b border-slate-100">

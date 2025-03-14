@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "N-PORT Explorer",
-  description: "Explore N-PORT filings",
+  title: "N-Port Explorer",
+  description: "Explore N-Port filings",
   icons: {
     icon: "/favicon.png",
   },

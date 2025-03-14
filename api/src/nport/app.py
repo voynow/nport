@@ -5,7 +5,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from nport.types import Holding, NPortResponse
 
-app = FastAPI(title="N-PORT API", description="API for querying SEC N-PORT filings")
+app = FastAPI(title="N-Port API", description="API for querying SEC N-Port filings")
 
 # Add this CORS middleware configuration right after creating the FastAPI app
 app.add_middleware(
@@ -20,10 +20,10 @@ app.add_middleware(
 @app.get("/nport/{cik}", response_model=NPortResponse)
 async def get_recent_nport_filing(cik: str) -> NPortResponse:
     """
-    Get the most recent N-PORT filing for a given CIK
+    Get the most recent N-Port filing for a given CIK
 
     :param cik: The Central Index Key (CIK) of the filer (e.g., "0000884394" for SPY)
-    :return: A dictionary containing the metadata of the most recent N-PORT filing
+    :return: A dictionary containing the metadata of the most recent N-Port filing
     """
     json_payload = {
         "query": f"filerInfo.filer.issuerCredentials.cik:{cik}",
@@ -41,7 +41,7 @@ async def get_recent_nport_filing(cik: str) -> NPortResponse:
     #     data = response.json()
     # except requests.exceptions.RequestException as e:
     #     raise HTTPException(
-    #         status_code=500, detail=f"Failed to fetch N-PORT filing: {e}"
+    #         status_code=500, detail=f"Failed to fetch N-Port filing: {e}"
     #     )
 
     # try:
