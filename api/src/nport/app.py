@@ -7,10 +7,9 @@ from nport.types import Holding, NPortResponse
 
 app = FastAPI(title="N-Port API", description="API for querying SEC N-Port filings")
 
-# Add this CORS middleware configuration right after creating the FastAPI app
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Your Next.js frontend URL
+    allow_origins=["http://localhost:3000", "https://nport-drab.vercel.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
