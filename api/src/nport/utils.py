@@ -1,9 +1,11 @@
 import os
+from functools import lru_cache
 
 import requests
 from nport.types import Holding, NPortResponse
 
 
+@lru_cache(maxsize=100)
 def get_nport_filing(cik: str) -> dict:
     """
     Get the N-Port filing for a given CIK

@@ -1,5 +1,6 @@
-import requests
 import traceback
+
+import requests
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from nport.types import NPortResponse
@@ -17,7 +18,7 @@ app.add_middleware(
 
 
 @app.get("/nport/{cik}", response_model=NPortResponse)
-async def get_recent_nport_filing(cik: str) -> NPortResponse:
+def get_recent_nport_filing(cik: str) -> NPortResponse:
     """
     Get the most recent N-Port filing for a given CIK
 
