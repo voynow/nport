@@ -45,11 +45,17 @@ export default function Home() {
   const [sortField, setSortField] = useState<SortField>('valUSD')
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc')
 
-  async function fetchHoldings() {
+  const SUGGESTED_CIKS = [
+    { cik: '0000884394', name: 'SPY' },
+    { cik: '0000034066', name: 'VGT' }
+  ]
+
+  async function fetchHoldings(overrideCik?: string) {
     try {
       setLoading(true)
       setError('')
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/nport/${cik}`)
+      const cikToUse = overrideCik || cik
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/nport/${cikToUse}`)
       if (!res.ok) throw new Error('Failed to fetch holdings')
       const rawData = await res.json()
 
@@ -108,52 +114,91 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <header className="mb-12 text-center pt-8">
-        <h1 className="text-4xl font-bold text-slate-600 mb-3">N-Port Explorer</h1>
-        <p className="text-slate-500 text-lg">Enter a CIK to view fund holdings</p>
-      </header>
+      <div className={`transition-all duration-500 ${data ? 'mb-12' : 'min-h-screen flex flex-col items-center justify-center'}`}>
+        <header className={`text-center ${data ? 'pt-8' : 'mb-16'}`}>
+          <h1 className={`font-bold text-slate-600 transition-all duration-500 ${data ? 'text-4xl mb-3' : 'text-6xl mb-6'}`}>
+            N-Port Explorer
+          </h1>
+          <p className={`text-slate-500 transition-all ${data ? 'text-lg' : 'text-2xl'}`}>
+            Enter a CIK to view fund holdings
+          </p>
+        </header>
 
-      <div className="max-w-2xl mx-auto px-4 mb-16">
-        <div className="flex gap-3">
-          <input
-            type="text"
-            value={cik}
-            onChange={(e) => setCik(e.target.value)}
-            placeholder="Enter CIK (e.g. 0000884394)"
-            className="flex-1 px-6 py-3 rounded-xl border-0 
-              text-slate-600 placeholder:text-slate-400
-              shadow-sm ring-1 ring-slate-200
-              focus:outline-none focus:ring-2 focus:ring-blue-500
-              transition-all text-lg"
-          />
-          <button
-            onClick={fetchHoldings}
-            disabled={loading || !cik}
-            className="px-8 py-3 bg-blue-500 text-white rounded-xl 
-              hover:bg-blue-600 disabled:opacity-50 
-              disabled:hover:bg-blue-500 transition-all
-              shadow-sm font-medium text-lg"
-          >
-            {loading ? (
-              <span className="flex items-center gap-2">
-                <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                </svg>
-                Loading
-              </span>
-            ) : 'Search'}
-          </button>
+        <div className={`w-full transition-all duration-500 ${data ? 'max-w-2xl' : 'max-w-4xl'} mx-auto px-4`}>
+          <div className="flex gap-3">
+            <input
+              type="text"
+              value={cik}
+              onChange={(e) => setCik(e.target.value)}
+              placeholder="Enter CIK (e.g. 0000884394)"
+              className={`flex-1 px-6 transition-all duration-500
+                ${data ? 'py-3 text-lg' : 'py-5 text-xl'}
+                rounded-xl border-0 
+                text-slate-600 placeholder:text-slate-400
+                shadow-sm ring-1 ring-slate-200
+                focus:outline-none focus:ring-2 focus:ring-blue-500`}
+            />
+            <button
+              onClick={() => {
+                setCik(cik);
+                fetchHoldings(cik);
+              }}
+              disabled={loading || !cik}
+              className={`transition-all duration-500
+                ${data ? 'px-8 py-3 text-lg' : 'px-10 py-5 text-xl'}
+                bg-blue-500 text-white rounded-xl 
+                hover:bg-blue-600 disabled:opacity-50 
+                disabled:hover:bg-blue-500
+                shadow-sm font-medium`}
+            >
+              {loading ? (
+                <span className="flex items-center gap-2">
+                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                  Loading
+                </span>
+              ) : 'Search'}
+            </button>
+          </div>
+          {error && (
+            <p className="mt-3 text-red-500 text-sm">{error}</p>
+          )}
+
+          <div className={`text-center transition-all duration-500 ${data ? 'mt-8' : 'mt-16'}`}>
+            <p className="text-slate-500 mb-4">Or try these popular ETFs:</p>
+            <div className="flex gap-4 justify-center">
+              {SUGGESTED_CIKS.map(({ cik: suggestedCik, name }) => (
+                <button
+                  key={suggestedCik}
+                  onClick={() => {
+                    setCik(suggestedCik);
+                    fetchHoldings(suggestedCik);
+                  }}
+                  className={`transition-all duration-500
+                    ${data ? 'px-6 py-4 min-w-[160px]' : 'px-8 py-6 min-w-[200px]'}
+                    bg-white text-slate-700 rounded-xl 
+                    hover:bg-blue-50 border-2 border-slate-100 
+                    hover:border-blue-200 shadow-sm
+                    flex flex-col items-center gap-1`}
+                >
+                  <span className={`font-semibold transition-all ${data ? 'text-xl' : 'text-2xl'}`}>
+                    {name}
+                  </span>
+                  <span className="text-sm text-slate-400">{suggestedCik}</span>
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
-        {error && (
-          <p className="mt-3 text-red-500 text-sm">{error}</p>
-        )}
       </div>
 
       {data && (
-        <div className="flex">
-          <div className="w-64 px-8">
-            <div className="sticky top-8">
+        <>
+          {/* Fixed navigation panel - centered vertically */}
+          <div className="fixed left-8 top-1/2 -translate-y-1/2 w-64">
+            <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-6">
               <h4 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">
                 Navigation
               </h4>
@@ -172,16 +217,18 @@ export default function Home() {
             </div>
           </div>
 
-          <main className="flex-1 max-w-5xl px-8 pb-16 space-y-8">
+          {/* Centered main content */}
+          <div className="max-w-5xl mx-auto px-8 pb-16 space-y-8">
             <div id="overview" className="bg-white rounded-2xl shadow-sm p-8">
               <h2 className="text-2xl font-semibold text-slate-600">{data.regName}</h2>
               <p className="text-slate-500 mt-2 text-lg">
-                {data.holdings.length.toLocaleString()} holdings found • Top 10 holdings shown below
+                {data.holdings.length.toLocaleString()} holdings found
               </p>
             </div>
 
             <div id="portfolio-composition" className="bg-white rounded-2xl shadow-sm p-8">
               <h3 className="text-xl font-semibold text-slate-600 mb-6">Portfolio Composition</h3>
+              <p className="text-slate-400 text-lg">Top 10 holdings</p>
               <div className="h-[600px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
@@ -257,8 +304,8 @@ export default function Home() {
                 </table>
               </div>
             </div>
-          </main>
-        </div>
+          </div>
+        </>
       )}
     </div>
   )
