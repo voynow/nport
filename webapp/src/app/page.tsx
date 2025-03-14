@@ -198,7 +198,7 @@ export default function Home() {
         <>
           {/* Fixed navigation panel - centered vertically */}
           <div className="fixed left-8 top-1/2 -translate-y-1/2 w-64">
-            <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-6">
+            <div className="rounded-2xl p-6">
               <h4 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">
                 Navigation
               </h4>
